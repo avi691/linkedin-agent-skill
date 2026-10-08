@@ -36,7 +36,7 @@ Or as a plugin:
 
 ```
 /plugin marketplace add avi691/linkedin-agent-skill
-/plugin install linkedin-agent
+/plugin install linkedin-agent@linkedin-agent-skill
 ```
 
 Project-local instead of global: copy the same folders into your repo's
@@ -106,7 +106,8 @@ those are handed back for a rewrite rather than mangled by a regex.
 | VOICE | contractions, person, structural tells |
 
 The verdict weights the mean at 60% and the **weakest single check** at 40%,
-because a detector only needs one signal to fire.
+because a detector only needs one signal to fire. **PASS needs an overall
+score of 70 or more, with no single check below 55.**
 
 Run against a deliberately terrible draft:
 
