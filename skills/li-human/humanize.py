@@ -144,6 +144,9 @@ def pass_lexical(text, lex):
     # Clean up after deletions.
     text = re.sub(r"[ \t]{2,}", " ", text)
     text = re.sub(r"(?m)^[ \t]*([,.;:])\s*", "", text)
+    # A deleted sentence leaves its full stop behind ("fast. ." -> "fast.").
+    # The space between them is the deletion's mark, so "..." is untouched.
+    text = re.sub(r"([.!?])[ \t]+[.!?]+", r"\1", text)
     text = re.sub(r"\s+([,.;:!?])", r"\1", text)
     text = re.sub(r"(?m)^[ \t]+$", "", text)
     text = re.sub(r"\n{3,}", "\n\n", text)

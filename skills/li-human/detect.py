@@ -63,7 +63,7 @@ def check_burstiness(text):
     """Humans vary sentence length hard. Models write even."""
     lens = [len(s.split()) for s in sentences(text)]
     if len(lens) < 4:
-        return 50.0, "too short to judge"
+        return None, "too short to judge"
     mean = statistics.mean(lens)
     cv = statistics.pstdev(lens) / mean if mean else 0
     score = scale(cv, human=0.70, machine=0.22)
@@ -74,7 +74,7 @@ def check_specificity(text):
     """Numbers, names and concrete nouns. Slop is abstract."""
     w = words(text)
     if len(w) < 25:
-        return 50.0, "too short to judge"
+        return None, "too short to judge"
     per100 = 100 / len(w)
     hits = len(NUMBERS.findall(text)) + len(set(PROPER.findall(text)))
     density = hits * per100
@@ -122,7 +122,7 @@ def check_voice(text, lex):
     """Contractions, person, and the shapes models default to."""
     w = words(text)
     if len(w) < 25:
-        return 50.0, "too short to judge"
+        return None, "too short to judge"
     per100 = 100 / len(w)
     contractions = len(CONTRACTIONS.findall(text)) * per100
     person = len(PRONOUNS.findall(text)) * per100
@@ -161,7 +161,9 @@ def run(text, lex):
     results["SLOP DENSITY"] = check_slop(text, lex)
     results["FINGERPRINT"] = check_fingerprint(text)
     results["VOICE"] = check_voice(text, lex)
-    scores = [results[c][0] for c in CHECKS]
+    # A check that is too short to judge is left out, not scored as a fail:
+    # a 3-sentence comment has no sentence-length variation to measure.
+    scores = [results[c][0] for c in CHECKS if results[c][0] is not None]
     # The weakest check drags the verdict: a detector only needs one signal.
     overall = statistics.mean(scores) * 0.6 + min(scores) * 0.4
     verdict = "PASS" if overall >= 70 and min(scores) >= 55 else (
@@ -178,14 +180,21 @@ def render(results, overall, verdict, label=None, out=sys.stdout):
     title = "AI DETECTION PANEL" + (f"  -  {label}" if label else "")
     print("\n" + title, file=out)
     print("=" * max(len(title), 62), file=out)
+    judged = [c for c in CHECKS if results[c][0] is not None]
     for name in CHECKS:
         score, detail = results[name]
-        print(f"  {name:<13} {bar(score)} {score:5.1f}", file=out)
+        if score is None:
+            print(f"  {name:<13} {'-' * 24}   n/a", file=out)
+        else:
+            print(f"  {name:<13} {bar(score)} {score:5.1f}", file=out)
         print(f"  {'':<13} {detail}", file=out)
     print("-" * 62, file=out)
     print(f"  {'HUMAN SCORE':<13} {bar(overall)} {overall:5.1f}   {verdict}", file=out)
+    if len(judged) < len(CHECKS):
+        print(f"  {'':<13} on {len(judged)} of {len(CHECKS)} checks, "
+              f"the rest need longer text", file=out)
     if verdict != "PASS":
-        weakest = min(CHECKS, key=lambda c: results[c][0])
+        weakest = min(judged, key=lambda c: results[c][0])
         print(f"\n  Weakest signal: {weakest}. Fix that first.", file=out)
     print("", file=out)
 
@@ -210,7 +219,8 @@ def main():
         results, overall, verdict = run(text, lex)
         payload.append({
             "source": name,
-            "checks": {k: {"score": round(v[0], 1), "detail": v[1]} for k, v in results.items()},
+            "checks": {k: {"score": None if v[0] is None else round(v[0], 1), "detail": v[1]}
+                       for k, v in results.items()},
             "human_score": round(overall, 1),
             "verdict": verdict,
         })

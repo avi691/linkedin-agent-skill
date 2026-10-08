@@ -77,6 +77,11 @@ The verdict weights the mean at 60% and the **weakest single check** at 40%,
 because a detector only needs one signal to fire. PASS needs an overall of 70+
 with no check below 55.
 
+A check with too little text to measure shows `n/a` and is left out of the
+verdict, and the panel says how many of the five it judged. BURSTINESS needs
+4 sentences and SPECIFICITY and VOICE need 25 words, so a 3-sentence comment
+is scored on four checks. Say so when you report the score.
+
 ## Say this honestly
 
 These are five local heuristics modelled on the signals public detectors key
