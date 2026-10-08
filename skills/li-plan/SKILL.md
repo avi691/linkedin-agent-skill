@@ -14,7 +14,12 @@ gets executed. Run it once a week, on the same day.
 
 ## Input
 
-If `~/.claude/linkedin/voice.md` and `log.md` exist, read them - the plan
+Find the user's files first. If `~/.claude/linkedin/config.json` exists, its
+`voice`, `plan` and `log` paths say where they live, and it may set
+`timezone` and `products`. Without a config, the files are
+`~/.claude/linkedin/voice.md`, `plan.md` and `log.md`.
+
+If the voice file and log exist, read them - the plan
 should not repeat a theme from the last fortnight. If they do not exist, ask
 for four things and write them down:
 
@@ -23,6 +28,13 @@ for four things and write them down:
 3. What actually happened this week - a client call, a number, a mistake, a
    thing they built, an argument they had. This is where posts come from.
 4. Ten to twenty people or companies worth being visible to.
+
+## Which product
+
+If the config lists `products`, ask which one the week is for unless the
+request says ("plan the app's week"). A week can be split between products
+when the user asks for that; then label every slot with its product and keep
+each slot's angle and hook inside that product's section of the voice file.
 
 ## What to post
 
@@ -56,7 +68,8 @@ first line is good.** If the user is optimising posting times before their
 hooks work, they are polishing the wrong thing, and you should say so.
 
 Anchor the times to their audience's timezone, not the user's, if those
-differ.
+differ. If the config sets `timezone`, use it for every time in the plan and
+name it once at the top (`all times WAT`).
 
 ## Who to engage with
 
@@ -90,5 +103,5 @@ ENGAGE  (5 reach / 3 peers / 2 buyers)
 Say "write Tuesday" and I will draft it.
 ```
 
-Write the plan to `~/.claude/linkedin/plan.md` so the other skills can read it.
+Write the plan to the plan file so the other skills can read it.
 Nothing is scheduled or posted anywhere - this is a plan, and the user runs it.

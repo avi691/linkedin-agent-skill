@@ -19,6 +19,26 @@ gives a YouTube URL and there is a transcript tool available in the session,
 use it; otherwise ask them to paste the text. Read the whole thing before
 extracting anything.
 
+## Which product
+
+Some users post for more than one product or brand from the same profile.
+If `~/.claude/linkedin/config.json` lists `products`, every post extracted is for
+exactly one of them:
+
+1. **Take it from the request** - "for the app", "for the agency". If the
+   request does not name one, **ask which before writing anything.** Do not
+   guess from the topic.
+2. **Write from that product's section of the voice file** (its
+   `voice_section`): its audience, tone and proof points. The shared sections
+   still apply. Never borrow a proof point from another product.
+3. **Read every file in `checks`** (top level, for every product) **and in
+   that product's own `checks`** before drafting. They are the user's rules:
+   banned claims, verified figures, disclosure. A draft that breaks one is not
+   shown. Say which rule it broke and redraft.
+4. **Name the product in the receipt** under the draft, so the log records it.
+
+No `products` in the config means one voice and one audience, as before.
+
 ## Extract, do not summarise
 
 A summary of a video is not a post. Nobody wants the summary. Go through the

@@ -49,6 +49,37 @@ Then spend ten minutes on `templates/voice.md`. Copy it to
 into Claude and say "write my voice.md from these". Every skill reads that
 file. Skip it and everything comes out sounding like everyone else.
 
+**Keeping your files somewhere else.** If your voice file, plan and log
+already live in a repo, point the skills at them with
+`~/.claude/linkedin/config.json` instead of copying them:
+
+```json
+{
+  "voice": "/path/to/your/repo/voice.md",
+  "plan": "/path/to/your/repo/linkedin/plan.md",
+  "log": "/path/to/your/repo/linkedin/log.md",
+  "timezone": "Africa/Lagos"
+}
+```
+
+Every key is optional. Anything missing falls back to `~/.claude/linkedin/`.
+
+**More than one product on one profile.** Add `products`, and the writing
+skills ask which product a post is for when you don't say:
+
+```json
+{
+  "checks": ["/path/to/disclosure-rules.md"],
+  "products": {
+    "app":    { "voice_section": "App audience",    "checks": ["/path/to/banned-claims.md"] },
+    "agency": { "voice_section": "Agency audience", "checks": [] }
+  }
+}
+```
+
+`voice_section` names a heading in your voice file. `checks` are files of
+rules every draft must pass before you see it.
+
 ## The eleven
 
 | command | what it does |

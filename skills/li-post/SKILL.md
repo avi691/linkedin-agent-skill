@@ -16,7 +16,12 @@ posted it.
 
 ## Before you write
 
-1. Read `~/.claude/linkedin/voice.md` if it exists. That file is the user's
+1. Find the user's files first. If `~/.claude/linkedin/config.json` exists, it
+   says where they live: `voice`, `plan` and `log` are paths, and it may also
+   set `timezone` and `products`. Use those paths wherever this pack says
+   `voice.md`, `plan.md` or `log.md`. Without a config, the files are
+   `~/.claude/linkedin/voice.md`, `plan.md` and `log.md`.
+   Then read the voice file if it exists. That file is the user's
    voice profile: how they talk, what they never say, who they are talking to.
    If it does not exist, ask for **three of their own past posts**, infer the
    voice from those, and write the file. Do not skip this and do not invent a
@@ -26,6 +31,26 @@ posted it.
 3. If the idea is thin - "post about AI" - do not pad it. Ask one batched
    question: what happened, to whom, and what did it cost or return. A post
    needs one specific true thing. Get it before writing.
+
+## Which product
+
+Some users post for more than one product or brand from the same profile.
+If `~/.claude/linkedin/config.json` lists `products`, every draft is for
+exactly one of them:
+
+1. **Take it from the request** - "for the app", "for the agency". If the
+   request does not name one, **ask which before writing anything.** Do not
+   guess from the topic.
+2. **Write from that product's section of the voice file** (its
+   `voice_section`): its audience, tone and proof points. The shared sections
+   still apply. Never borrow a proof point from another product.
+3. **Read every file in `checks`** (top level, for every product) **and in
+   that product's own `checks`** before drafting. They are the user's rules:
+   banned claims, verified figures, disclosure. A draft that breaks one is not
+   shown. Say which rule it broke and redraft.
+4. **Name the product in the receipt** under the draft, so the log records it.
+
+No `products` in the config means one voice and one audience, as before.
 
 ## The shape
 
@@ -62,6 +87,7 @@ pasted. Then, underneath:
 
 ```
 POST READY
+product:   (from config, if it lists products)
 hook:      #17 Time Anchor
 length:    1,140 characters
 humanizer: 6 artefacts stripped, human score 84 PASS
@@ -71,7 +97,7 @@ Reply "yes" to log it, or tell me what to change.
 ```
 
 **5. Never publish.** This skill produces text. The user posts it. On "yes",
-append the post to `~/.claude/linkedin/log.md` with the date, the hook used
+append the post to the log file with the date, the hook used
 and the first line, so `/li-audit` has a history to work from later.
 
 ## Rules that make the difference
